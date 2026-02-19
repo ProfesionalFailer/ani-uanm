@@ -1,1 +1,1 @@
-from anime_unity import AnimeUnity
+from .anime_unity import AnimeUnity

@@ -1,5 +1,6 @@
-# Pytnon venv folders
+# Pytnon venv and cache folders
 venv/
+__pycache__/
 
 # Environment Variables
 .env
