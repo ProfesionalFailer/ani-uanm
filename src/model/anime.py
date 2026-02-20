@@ -3,7 +3,9 @@ from .episode import Episode
 
 
 class Anime:
-    def __init__(self, id: str, title: str, n_ep: int):
+    def __init__(
+        self, id: str, title: str, n_ep: int, episodes: Optional[List[Episode]] = None
+    ):
         if not id or not title:
             raise ValueError("Invalid anime data")
 
@@ -16,7 +18,12 @@ class Anime:
         self.title: str = title
         self.n_ep: int = n_ep
 
+        self.start_from_zero = False
+
         self.__episodes: Optional[List[Episode]] = None
+
+        if episodes != None:
+            self.episodes = episodes
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "Anime":
@@ -32,7 +39,20 @@ class Anime:
         except (TypeError, ValueError):
             raise ValueError(f"{n_ep} is not a valid number of episodes")
 
-        return cls(id=id, title=title, n_ep=n_ep_int)
+        episodes = data.get("episodes")
+        if not isinstance(episodes, list):
+            return cls(id=id, title=title, n_ep=n_ep_int)
+
+        ep_objs = []
+        for ep in episodes:
+            if isinstance(ep, Episode):
+                ep_objs.append(ep)
+            elif isinstance(ep, dict):
+                ep_objs.append(Episode.from_dict(ep))
+            else:
+                raise ValueError(f"Invalid episode entry: {ep}")
+
+        return cls(id=id, title=title, n_ep=n_ep_int, episodes=data.get("episodes"))
 
     @classmethod
     def from_unity_dict(cls, data: Dict[str, Any]) -> "Anime":
@@ -62,10 +82,12 @@ class Anime:
         if len(episodes) > self.n_ep:
             raise ValueError("Number of episodes can't exceed expected length")
 
-        self.__episodes = episodes
+        self.__episodes = sorted(episodes)
+        if self.__episodes and self.__episodes[0].num == 0:
+            self.start_from_zero = True
 
     def has_episodes(self) -> bool:
         return bool(self.__episodes)
 
     def __repr__(self) -> str:
-        return f"<Anime id={self.title} n_ep={self.n_ep}>"
+        return f"<Anime id={self.title} title={self.title} n_ep={self.n_ep}>"

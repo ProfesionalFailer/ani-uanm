@@ -108,7 +108,9 @@ class AnimeUnity:
         if not match:
             return []
 
-        return [Episode.from_dict(ep) for ep in jsloads(unescape(match.group(1)))]
+        return sorted(
+            [Episode.from_dict(ep) for ep in jsloads(unescape(match.group(1)))]
+        )
 
     def get_episode_playlist(self, episode_id: str) -> str:
         if not isinstance(episode_id, str) or not episode_id.isnumeric():

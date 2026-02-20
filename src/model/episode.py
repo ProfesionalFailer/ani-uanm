@@ -40,5 +40,26 @@ class Episode:
 
         return cls.from_dict(data)
 
+    def __lt__(self, other: object) -> bool:
+        if not isinstance(other, Episode):
+            raise TypeError(
+                f"'<' not supported between instances of 'Episode' and '{type(other).__name__}'"
+            )
+        return self.num < other.num
+
+    def __gt__(self, other: object) -> bool:
+        if not isinstance(other, Episode):
+            raise TypeError(
+                f"'>' not supported between instances of 'Episode' and '{type(other).__name__}'"
+            )
+        return self.num > other.num
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Episode):
+            raise TypeError(
+                f"'==' not supported between instances of 'Episode' and '{type(other).__name__}'"
+            )
+        return self.num == other.num
+
     def __repr__(self) -> str:
         return f"<Episode id={self.id} num={self.num}>"
