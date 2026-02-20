@@ -9,35 +9,48 @@ from json import loads as jsloads
 from PIL import Image
 from io import BytesIO
 
-from config import ANIMEUNITY_URL
-from utils.req_const import GET, POST
+from ..utils import ANIMEUNITY_URL
+from ..utils.consts import GET, POST, APP_JSON, XSRF, USER_AGENT, RGB
+
+from ..model import Anime, Episode
 
 
 class AnimeUnity:
+    _instance = None  # Singleton instance
+
     DEFAULT_TIMEOUT = 60
 
     GET_ANIMES_ENDPOINT = "archivio/get-animes"
     ANIME_ENDPOINT = "anime"
     EMBED_ENDPOINT = "embed-url"
 
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
     def __init__(self) -> None:
+        if hasattr(self, "_initialized") and self._initialized:
+            return
+
         self.URL = ANIMEUNITY_URL
         if self.URL is None:
             raise Exception("The program can't work without an env")
 
         self.session = None
         self._create_session()
+        self._initialized = True  # Mark as initialized
 
     def _create_session(self, recreate: bool = False) -> None:
         if self.session and not recreate:
             return
 
         self.session = requests.Session()
-        self.session.headers.update({"User-Agent": "Mozilla/5.0"})
+        self.session.headers.update(USER_AGENT)
 
         self._request(GET, self.URL)  # type: ignore
 
-        xsrf_token = self.session.cookies.get("XSRF-TOKEN")
+        xsrf_token = self.session.cookies.get(XSRF)
         if not xsrf_token:
             raise Exception("Token XSRF non trovato")
 
@@ -47,7 +60,7 @@ class AnimeUnity:
         self.session.headers.update(
             {
                 "x-xsrf-token": xsrf_token,
-                "content-type": "application/json",
+                "content-type": APP_JSON,
             }
         )
 
@@ -60,15 +73,9 @@ class AnimeUnity:
         response.raise_for_status()
         return response
 
-    def search_animes(
-        self, title: str, dubbed: bool = False
-    ) -> list[dict[str, str | None]] | None:
+    def search_animes(self, title: str, dubbed: bool = False) -> list[Anime]:
         return [
-            {
-                "url": f"{anime.get("id")}{anime.get("slug")}",
-                "title": f"{anime.get("title") or anime.get("title_eng", "Anime Sconosciuto")} ({anime.get("real_episodes_count") or anime.get("episodes_count", "/")})",
-                "image_url": anime.get("imageurl") or anime.get("imageurl_cover"),
-            }
+            Anime.from_dict(anime)
             for anime in self._request(
                 POST,
                 f"{self.URL}/{self.GET_ANIMES_ENDPOINT}",
@@ -86,26 +93,22 @@ class AnimeUnity:
 
         try:
             img = Image.open(BytesIO(self._request(GET, url, timeout=5).content))
-            img = img.convert("RGB")
+            img = img.convert(RGB)
 
             img.thumbnail(max_size, Image.Resampling.LANCZOS)
             return img
         except Exception as e:
             return None
 
-    def get_episodes(self, url: str) -> dict[str, str] | None:
+    def get_episodes(self, url: str) -> list[Episode]:
         match = re.search(
             r'episodes="([^"]*)"',
             self._request(GET, f"{self.URL}/{self.ANIME_ENDPOINT}/{url}").text,
         )
         if not match:
-            return {}
+            return []
 
-        return {
-            ep.get("number"): ep.get("id")
-            for ep in jsloads(unescape(match.group(1)))
-            if ep.get("number") and ep.get("id")
-        }
+        return [Episode.from_dict(ep) for ep in jsloads(unescape(match.group(1)))]
 
     def get_episode_playlist(self, episode_id: str) -> str:
         if not isinstance(episode_id, str) or not episode_id.isnumeric():
