@@ -1,18 +1,15 @@
-import requests
-from urllib.parse import unquote, urlencode
-from html import unescape
-
 import re
-
-from json import loads as jsloads
-
-from PIL import Image
+from html import unescape
 from io import BytesIO
+from json import loads as jsloads
+from urllib.parse import unquote, urlencode
 
-from ..utils import ANIMEUNITY_URL
-from ..utils.consts import GET, POST, APP_JSON, XSRF, USER_AGENT, RGB
+import requests
+from PIL import Image
 
 from ..model import Anime, Episode
+from ..utils import ANIMEUNITY_URL
+from ..utils.consts import APP_JSON, GET, POST, RGB, USER_AGENT, XSRF
 
 
 class AnimeUnity:
