@@ -62,6 +62,12 @@ class Anime:
             "n_ep": data.get("real_episodes_count") or data.get("episodes_count") or 0,
             # image_url is unused for now but may be used in the future
             "image_url": data.get("imageurl") or data.get("imageurl_cover"),
+            # ended is unused for now but may be used to cache only anime which have ended
+            "ended": (
+                True
+                if str(data.get("status")).lower().strip() == "terminato"
+                else False
+            ),
         }
 
         return cls.from_dict(new_data)

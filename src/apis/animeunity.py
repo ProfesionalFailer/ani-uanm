@@ -75,7 +75,7 @@ class AnimeUnity:
 
     def search_animes(self, title: str, dubbed: bool = False) -> list[Anime]:
         return [
-            Anime.from_dict(anime)
+            Anime.from_unity_dict(anime)
             for anime in self._request(
                 POST,
                 f"{self.URL}/{self.GET_ANIMES_ENDPOINT}",
@@ -109,7 +109,7 @@ class AnimeUnity:
             return []
 
         return sorted(
-            [Episode.from_dict(ep) for ep in jsloads(unescape(match.group(1)))]
+            [Episode.from_unity_dict(ep) for ep in jsloads(unescape(match.group(1)))]
         )
 
     def get_episode_playlist(self, episode_id: str) -> str:
