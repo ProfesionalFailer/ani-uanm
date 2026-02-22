@@ -18,7 +18,7 @@ class AnimeUnity:
     DEFAULT_TIMEOUT = 60
 
     GET_ANIMES_ENDPOINT = "archivio/get-animes"
-    ANIME_ENDPOINT = "anime"
+    INFO_ENDPOINT = "info_api"
     EMBED_ENDPOINT = "embed-url"
 
     def __new__(cls, *args, **kwargs):
@@ -97,24 +97,33 @@ class AnimeUnity:
         except Exception as e:
             return None
 
-    def get_episodes(self, url: str) -> list[Episode]:
-        match = re.search(
-            r'episodes="([^"]*)"',
-            self._request(GET, f"{self.URL}/{self.ANIME_ENDPOINT}/{url}").text,
-        )
-        if not match:
+    def get_episodes(self, anime: Anime) -> list[Episode]:
+        if not anime:
             return []
 
-        return sorted(
-            [Episode.from_unity_dict(ep) for ep in jsloads(unescape(match.group(1)))]
-        )
+        start = 0 if anime.start_from_zero else 1
 
-    def get_episode_playlist(self, episode_id: str) -> str:
-        if not isinstance(episode_id, str) or not episode_id.isnumeric():
+        return [
+            Episode.from_unity_dict(ep)
+            for i in range(0 if anime.start_from_zero else 1, anime.n_ep + 2, 120)
+            for ep in self._request(
+                GET,
+                f"{self.URL}/{self.INFO_ENDPOINT}/{anime.id}/{0 if anime.start_from_zero else 1}",
+                params={"start_range": i, "end_range": i + 119},
+            )
+            .json()
+            .get("episodes", [])
+        ]
+
+    def get_episode_playlist(self, episode: str | Episode) -> str:
+        if isinstance(episode, Episode):
+            episode = episode.id
+
+        if not isinstance(episode, str) or not episode.isnumeric():
             return ""
 
         embed_url = self._request(
-            GET, f"{self.URL}/{self.EMBED_ENDPOINT}/{episode_id}"
+            GET, f"{self.URL}/{self.EMBED_ENDPOINT}/{episode}"
         ).text
 
         response_text = self._request(GET, embed_url).text
