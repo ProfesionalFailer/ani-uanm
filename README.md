@@ -22,6 +22,8 @@ Compatibility with other Python versions is currently unknown and not guaranteed
 
 - Backend logic implemented
 - AnimeUnity backend support
+- Mpv wrapper
+- Https redirector for mpv playlists
 
 ---
 
@@ -50,6 +52,9 @@ source .venv/bin/activate
 
 # Install dependencies
 pip install -r requirements.txt
+
+# Run (example)
+python ani-uanm-cli.py "Naruto" --episode 12 --dub
 ```
 
 Create a `.env` file in the root directory:
@@ -78,6 +83,9 @@ python -m venv .venv
 
 # Install dependencies
 pip install -r requirements.txt
+
+# Run (example)
+python ani-uanm-cli.py "Naruto" --episode 12 --dub
 ```
 
 ---
@@ -95,38 +103,31 @@ REDIRECT_PORT=a_free_port_to_host_the_redirector_server
 
 ---
 
-## ▶️ Running the Project
-
-Actually project is still _WIP_ and has no final program to run. You can test the anime_unity backend by implementing it into your script.
-
----
-
 ## 🛠 Project Status
 
 Currently:
 
 - ✅ Backend logic implemented
 - ✅ AnimeUnity backend support
-- ❌ No streaming support yet
+- ✅ Streaming support
+- ✅ Cli app
+- ❌ No bundled app
+- ❌ No way to change video quality
 - ❌ No download support yet
 - ❌ No UI yet
 - ❌ No additional providers yet
 
-At the moment, only backend work for AnimeUnity is implemented.
-A UI is currently in progress.
 
 ---
 
 ## 🔮 Next Features
 
-- Build a `mpv` wrapper
+- Improve the command line application
 - Allow downloading
 - Make a Discord Rich Presence integration
 - AniList integration
 - MyAnimeList integration
 - Add AnimeSaturn support
-- Improve the command line application
-- Build a TUI (Terminal User Interface)
 - Eventually build a GUI
 
 ---

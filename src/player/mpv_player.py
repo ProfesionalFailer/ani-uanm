@@ -20,61 +20,35 @@ from ..utils import REDIRECT_PORT
 
 
 class MpvPlayer:
-    def __init__(self, state_file: str = "config/state.json"):
+    def __init__(self):
         self.player = MPV(
             ytdl=True,
             input_default_bindings=True,
             input_vo_keyboard=True,
             osc=True,
-            config=False,
-            scripts=path.abspath("scripts"),
             user_agent="Mozilla/5.0"
         )
 
+        self.anime_name: str | None = None
+        self.start: int = 1
+
         RedirectServer.start()
 
-        self.state_file = state_file
-
-        self.__load_state()
 
         @self.player.event_callback("shutdown")
         def on_shutdown(event):
-            self.__save_state()
             self.close()
+        
+        @self.player.event_callback('start-file')
+        def on_start_file(event):
+            pos = self.player.playlist_pos
 
-    def __save_state(self) -> bool:
-        try:
-            with open(self.state_file, "w") as f:
-                json.dump(
-                    {
-                        "volume": self.player.volume,
-                        "speed": self.player.speed,
-                        "maximize": self.player.window_maximized,
-                    },
-                    f,
-                )
-            return True
-        except Exception as e:
-            return False
+            if not self.anime_name or not isinstance(pos, int):
+                return
 
-    def __load_state(self) -> bool:
-        if not path.exists(self.state_file):
-            return False
+            current_track = pos + self.start
+            self.player['force-media-title'] = f"{self.anime_name} - Episodio {current_track}"
 
-        try:
-            with open(self.state_file, "r") as f:
-                state = json.load(f)
-
-            if "volume" in state:
-                self.player.volume = state["volume"]
-            if "speed" in state:
-                self.player.speed = state["speed"]
-            if "maximize" in state:
-                self.player.window_maximized = state["maximize"]
-
-            return True
-        except Exception as e:
-            return False
 
     def load_playlist(self, anime: Anime, episode: int) -> None:
         if not anime or not anime.episodes:
@@ -89,12 +63,16 @@ class MpvPlayer:
         if episode < start or episode > end:
             raise Exception("Numero dell'episodio non valido")
 
+        self.player.playlist_clear()
         for ep in anime.episodes:
             self.player.command(
                 "loadfile", f"http://localhost:{REDIRECT_PORT}/{ep.id}", "append"
             )
 
+        self.start = start
+        self.anime_name = anime.title
         self.player.playlist_play_index(episode - start)
+    
 
     def close(self):
         RedirectServer.stop()
