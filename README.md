@@ -41,7 +41,7 @@ Compatibility with other Python versions is currently unknown and not guaranteed
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/ani-uanm.git
+git clone https://github.com/ProfesionalFailer/ani-uanm
 cd ani-uanm
 
 # Create virtual environment
@@ -57,22 +57,13 @@ pip install -r requirements.txt
 python ani-uanm-cli.py "Naruto" --episode 12 --dub
 ```
 
-Create a `.env` file in the root directory:
-
-```env
-ANIMEUNITY_URL=your_animeunity_url_here
-REDIRECT_PORT=a_free_port_to_host_the_redirector_server
-```
-
-> The `ANIMEUNITY_URL` is NOT provided out of the box and must be set manually.
-
 ---
 
 ### 🔹 Windows
 
 ```powershell
 # Clone the repository
-git clone https://github.com/yourusername/ani-uanm.git
+git clone https://github.com/ProfesionalFailer/ani-uanm
 cd ani-uanm
 
 # Create virtual environment
