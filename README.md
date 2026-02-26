@@ -43,10 +43,10 @@ git clone https://github.com/yourusername/ani-uanm.git
 cd ani-uanm
 
 # Create virtual environment
-python -m venv venv
+python -m venv .venv
 
 # Activate virtual environment
-source venv/bin/activate
+source .venv/bin/activate
 
 # Install dependencies
 pip install -r requirements.txt
@@ -56,6 +56,7 @@ Create a `.env` file in the root directory:
 
 ```env
 ANIMEUNITY_URL=your_animeunity_url_here
+REDIRECT_PORT=a_free_port_to_host_the_redirector_server
 ```
 
 > The `ANIMEUNITY_URL` is NOT provided out of the box and must be set manually.
@@ -70,10 +71,10 @@ git clone https://github.com/yourusername/ani-uanm.git
 cd ani-uanm
 
 # Create virtual environment
-python -m venv venv
+python -m venv .venv
 
 # Activate virtual environment
-venv\Scripts\activate
+.\.venv\Scripts\activate.ps1
 
 # Install dependencies
 pip install -r requirements.txt
@@ -87,6 +88,7 @@ Create a `.env` file in the root directory:
 
 ```env
 ANIMEUNITY_URL=your_animeunity_url_here
+REDIRECT_PORT=a_free_port_to_host_the_redirector_server
 ```
 
 > The `ANIMEUNITY_URL` is NOT provided out of the box and must be set manually.
