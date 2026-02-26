@@ -41,7 +41,7 @@ Compatibility with other Python versions is currently unknown and not guaranteed
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/ani-uanm.git
+git clone https://github.com/ProfesionalFailer/ani-uanm
 cd ani-uanm
 
 # Create virtual environment
@@ -72,7 +72,7 @@ REDIRECT_PORT=a_free_port_to_host_the_redirector_server
 
 ```powershell
 # Clone the repository
-git clone https://github.com/yourusername/ani-uanm.git
+git clone https://github.com/ProfesionalFailer/ani-uanm
 cd ani-uanm
 
 # Create virtual environment
