@@ -57,15 +57,6 @@ pip install -r requirements.txt
 python ani-uanm-cli.py "Naruto" --episode 12 --dub
 ```
 
-Create a `.env` file in the root directory:
-
-```env
-ANIMEUNITY_URL=your_animeunity_url_here
-REDIRECT_PORT=a_free_port_to_host_the_redirector_server
-```
-
-> The `ANIMEUNITY_URL` is NOT provided out of the box and must be set manually.
-
 ---
 
 ### 🔹 Windows
