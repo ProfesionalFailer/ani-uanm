@@ -3,9 +3,8 @@ import os
 import sys
 from os import path
 
-# -------------------------------------------------
-# Windows-only PATH fix BEFORE importing MPV
-# -------------------------------------------------
+from .redirector import RedirectServer
+
 if sys.platform.startswith("win"):
     os.environ["PATH"] = (
         os.path.abspath(path.join(path.dirname(path.abspath(__file__)), "..", ".."))
@@ -29,7 +28,10 @@ class MpvPlayer:
             osc=True,
             config=False,
             scripts=path.abspath("scripts"),
+            user_agent="Mozilla/5.0"
         )
+
+        RedirectServer.start()
 
         self.state_file = state_file
 
@@ -38,6 +40,7 @@ class MpvPlayer:
         @self.player.event_callback("shutdown")
         def on_shutdown(event):
             self.__save_state()
+            self.close()
 
     def __save_state(self) -> bool:
         try:
@@ -94,4 +97,5 @@ class MpvPlayer:
         self.player.playlist_play_index(episode - start)
 
     def close(self):
+        RedirectServer.stop()
         self.player.quit()

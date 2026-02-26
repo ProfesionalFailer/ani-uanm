@@ -7,10 +7,15 @@ from ..utils import REDIRECT_PORT
 
 
 class RedirectServer:
-    __started = False
+    __server = None
 
     class RedirectHandler(BaseHTTPRequestHandler):
         anime = AnimeUnity()
+
+        cache = {}
+        
+        def log_message(self, format, *args):
+            return
 
         def do_GET(self):
             ep_id = urlparse(self.path).path.lstrip("/")
@@ -19,7 +24,12 @@ class RedirectServer:
                 return
 
             try:
-                url = self.anime.get_episode_playlist(ep_id)
+                if ep_id not in self.cache.keys():
+                    self.cache[ep_id] = self.anime.get_episode_playlist(ep_id)
+                
+                url = self.cache[ep_id]
+
+                
                 self.send_response(302)
                 self.send_header("Location", url)
                 self.end_headers()
@@ -33,13 +43,21 @@ class RedirectServer:
 
     @classmethod
     def start(cls):
-        if cls.__started:
+        if cls.__server:
             return
+        
+        cls.__server = HTTPServer(
+            ("localhost", REDIRECT_PORT),
+            cls.RedirectHandler
+        )
 
-        cls.__started = True
         threading.Thread(
-            target=lambda: HTTPServer(
-                ("localhost", REDIRECT_PORT), cls.RedirectHandler
-            ).serve_forever(),
-            daemon=True,
+            target=cls.__server.serve_forever,
         ).start()
+
+    @classmethod
+    def stop(cls):
+        if cls.__server:
+            cls.__server.shutdown()
+            cls.__server.server_close()
+            cls.__server = None
