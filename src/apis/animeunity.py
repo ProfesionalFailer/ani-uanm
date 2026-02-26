@@ -66,7 +66,13 @@ class AnimeUnity:
             raise Exception("You can't do any request without a valid session")
 
         kwargs.setdefault("timeout", self.DEFAULT_TIMEOUT)
-        response = self.session.request(method, url, **kwargs)
+
+        if method == GET:
+            response = self.session.get(url, **kwargs)
+        elif method == POST:
+            response = self.session.post(url, **kwargs)
+        else:
+            response = self.session.request(method, url, **kwargs)
         response.raise_for_status()
         return response
 
