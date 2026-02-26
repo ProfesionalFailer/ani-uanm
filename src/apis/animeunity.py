@@ -115,7 +115,7 @@ class AnimeUnity:
             .get("episodes", [])
         ]
 
-    def get_episode_playlist(self, episode: str | Episode) -> str:
+    def get_episode_stream(self, episode: str | Episode) -> str:
         if isinstance(episode, Episode):
             episode = episode.id
 

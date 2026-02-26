@@ -25,7 +25,7 @@ class RedirectServer:
 
             try:
                 if ep_id not in self.cache.keys():
-                    self.cache[ep_id] = self.anime.get_episode_playlist(ep_id)
+                    self.cache[ep_id] = self.anime.get_episode_stream(ep_id)
                 
                 url = self.cache[ep_id]
 
