@@ -2,6 +2,7 @@ import json
 import os
 import sys
 from os import path
+import time
 
 from .redirector import RedirectServer
 
@@ -71,6 +72,8 @@ class MpvPlayer:
 
         self.start = start
         self.anime_name = anime.title
+
+        time.sleep(0.05) # Sleep to allow playlist to load before playing
         self.player.playlist_play_index(episode - start)
     
 
