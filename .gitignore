@@ -2,9 +2,16 @@
 venv/
 __pycache__/
 
+# UV stuff
+uv.lock
+
+
 # Environment Variables
 .env
 
 # DLL dependencies
 libmpv-2.dll
 libmpv.dll.a
+
+# VsCode stuff
+.vscode/

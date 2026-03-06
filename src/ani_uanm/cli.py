@@ -1,9 +1,9 @@
 import questionary
 import typer
 
-from src.apis import AnimeUnity
-from src.model import Anime, Episode
-from src.player import MpvPlayer
+from .apis import AnimeUnity
+from .model import Anime, Episode
+from .player import MpvPlayer
 
 app = typer.Typer(help="Anime search and player CLI")
 

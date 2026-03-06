@@ -29,7 +29,8 @@ Compatibility with other Python versions is currently unknown and not guaranteed
 
 ## 📦 Requirements
 
-- Python 3.14.2 (recommended)
+- Python 3.14.2 (recommended as it's the only version tested)
+- `uv` installed as a cli tool and in yout path
 - `mpv` installed and available in your system PATH (windows installation needs mpv .dll in the project folder)
 - Git
 
@@ -37,47 +38,40 @@ Compatibility with other Python versions is currently unknown and not guaranteed
 
 ## 🚀 Installation & Setup
 
-### 🔹 Linux
-
+### Download the project
 ```bash
-# Clone the repository
 git clone https://github.com/ProfesionalFailer/ani-uanm
 cd ani-uanm
+```
 
-# Create virtual environment
-python -m venv .venv
+### Create venv
+```bash
+uv venv
+```
 
-# Activate virtual environment
+### Install
+
+#### Locally in Linux
+```bash
 source .venv/bin/activate
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Run (example)
-python ani-uanm-cli.py "Naruto" --episode 12 --dub
+uv pip install -e ".[cli]"
 ```
 
----
-
-### 🔹 Windows
-
+#### Locally in Windows
 ```powershell
-# Clone the repository
-git clone https://github.com/ProfesionalFailer/ani-uanm
-cd ani-uanm
-
-# Create virtual environment
-python -m venv .venv
-
-# Activate virtual environment
 .\.venv\Scripts\activate.ps1
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Run (example)
-python ani-uanm-cli.py "Naruto" --episode 12 --dub
+uv pip install -e ".[cli]"
 ```
+#### Globally in both
+```bash
+uv tool install -e ".[cli]"
+```
+
+### Run (example)
+``` bash
+ani-uanm-cli "Naruto" --episode 12 --dub
+```
+> This will be executed only inside the venv if installed locally.
 
 ---
 
@@ -90,7 +84,7 @@ ANIMEUNITY_URL=your_animeunity_url_here
 REDIRECT_PORT=a_free_port_to_host_the_redirector_server
 ```
 
-> The `ANIMEUNITY_URL` is NOT provided out of the box and must be set manually.
+> The `ANIMEUNITY_URL` is NOT provided out of the box and must be set manually. Ensure the url is formatted like 'https://www.<url>.'
 
 ---
 
@@ -102,6 +96,7 @@ Currently:
 - ✅ AnimeUnity backend support
 - ✅ Streaming support
 - ✅ Cli app
+- ✅ Global install through uv
 - ❌ No bundled app
 - ❌ No way to change video quality
 - ❌ No download support yet

@@ -1,0 +1,36 @@
+[project]
+name = "ani-uanm"
+description = "ani-uanm is a Python application designed to stream and download anime with Italian subtitles or dubbing from various sources."
+license = "MIT"
+keywords = ["anime", "streaming", "mpv", "watch anime", "italian sub", "italian dub"]
+
+version = "2026.3.6"
+requires-python = ">= 3.14"
+
+dependencies = [
+    "mpv >=1.0",
+    "pillow",
+    "python-dotenv",
+    "requests" 
+]
+
+[project.optional-dependencies]
+cli = [
+  "questionary >=2.0",
+  "typer",
+]
+
+
+
+[project.scripts]
+ani-uanm-cli = "ani_uanm.cli:app"
+
+[project.urls]
+repository = "https://github.com/ProfesionalFailer/ani-uanm"
+
+[build-system]
+requires = ["uv_build >= 0.10.7, <0.11.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "ani_uanm"

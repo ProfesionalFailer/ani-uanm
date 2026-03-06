@@ -2,7 +2,7 @@ import re
 from html import unescape
 from io import BytesIO
 from json import loads as jsloads
-from urllib.parse import unquote, urlencode
+from urllib.parse import unquote, urlencode, urlparse
 
 import requests
 from PIL import Image
@@ -13,7 +13,7 @@ from ..utils.consts import APP_JSON, GET, POST, RGB, USER_AGENT, XSRF
 
 
 class AnimeUnity:
-    _instance = None  # Singleton instance
+    _instance = None
 
     DEFAULT_TIMEOUT = 60
 
@@ -32,11 +32,18 @@ class AnimeUnity:
 
         self.URL = ANIMEUNITY_URL
         if self.URL is None:
-            raise Exception("The program can't work without an env")
+            raise Exception("The program can't work without a .env")
+        
+        parsed_url = urlparse(self.URL)
+        if not all([parsed_url.scheme, parsed_url.netloc]):
+            raise ValueError(f"Invalid URL provided: {self.URL}") 
+        
+        if not parsed_url.netloc.startswith("www."):
+            raise ValueError(f"URL must include 'www': {self.URL}")
 
         self.session = None
         self._create_session()
-        self._initialized = True  # Mark as initialized
+        self._initialized = True
 
     def _create_session(self, recreate: bool = False) -> None:
         if self.session and not recreate:
@@ -53,7 +60,6 @@ class AnimeUnity:
 
         xsrf_token = unquote(xsrf_token)
 
-        # Step 4: set header
         self.session.headers.update(
             {
                 "x-xsrf-token": xsrf_token,
@@ -73,7 +79,9 @@ class AnimeUnity:
             response = self.session.post(url, **kwargs)
         else:
             response = self.session.request(method, url, **kwargs)
+        
         response.raise_for_status()
+        
         return response
 
     def search_animes(self, title: str, dubbed: bool = False) -> list[Anime]:
@@ -108,6 +116,8 @@ class AnimeUnity:
             return []
 
         start = 0 if anime.start_from_zero else 1
+
+        eps: list[Episode] = []
 
         return [
             Episode.from_unity_dict(ep)
