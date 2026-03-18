@@ -2,12 +2,8 @@ import json
 import os
 import sys
 import time
-<<<<<<< HEAD
 from pypresence import Presence, ActivityType
 
-=======
-from os import path
->>>>>>> main
 
 from .redirector import RedirectServer
 
