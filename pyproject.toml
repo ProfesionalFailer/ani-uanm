@@ -11,7 +11,8 @@ dependencies = [
     "mpv >=1.0",
     "pillow",
     "python-dotenv",
-    "requests" 
+    "requests", 
+    "pypresence"
 ]
 
 [project.optional-dependencies]

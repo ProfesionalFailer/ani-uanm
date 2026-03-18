@@ -5,31 +5,20 @@ from json import loads as jsloads
 from urllib.parse import unquote, urlencode, urlparse
 
 import requests
-from PIL import Image
 
 from ..model import Anime, Episode
-from ..utils import ANIMEUNITY_URL
+from ..utils import ANIMEUNITY_URL, singleton
 from ..utils.consts import APP_JSON, GET, POST, RGB, USER_AGENT, XSRF
 
-
+@singleton
 class AnimeUnity:
-    _instance = None
-
     DEFAULT_TIMEOUT = 60
 
     GET_ANIMES_ENDPOINT = "archivio/get-animes"
     INFO_ENDPOINT = "info_api"
     EMBED_ENDPOINT = "embed-url"
 
-    def __new__(cls, *args, **kwargs):
-        if cls._instance is None:
-            cls._instance = super().__new__(cls)
-        return cls._instance
-
-    def __init__(self) -> None:
-        if hasattr(self, "_initialized") and self._initialized:
-            return
-
+    def __init__(self) -> None:      
         self.URL = ANIMEUNITY_URL
         if self.URL is None:
             raise Exception("The program can't work without a .env")

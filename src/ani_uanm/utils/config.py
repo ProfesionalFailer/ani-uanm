@@ -19,3 +19,6 @@ if not REDIRECT_PORT.isdigit():
 REDIRECT_PORT = int(REDIRECT_PORT)
 if REDIRECT_PORT > 65535 or REDIRECT_PORT < 0:
     raise OverflowError("bind(): port must be 0-65535")
+
+
+DISCORD_RPC = False if str(os.getenv("DISCORD_RPC")).lower().strip() in ["false", "none"] else True

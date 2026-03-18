@@ -5,7 +5,7 @@ from .episode import Episode
 
 class Anime:
     def __init__(
-        self, id: str, title: str, n_ep: int, episodes: Optional[List[Episode]] = None
+        self, id: str, title: str, n_ep: int, image_url: Optional[str] = None, episodes: Optional[List[Episode]] = None, 
     ):
         if not id or not title:
             raise ValueError("Invalid anime data")
@@ -18,6 +18,7 @@ class Anime:
         self.id: str = id
         self.title: str = title
         self.n_ep: int = n_ep
+        self.image_url: str = image_url
 
         self.start_from_zero = False
 
@@ -31,6 +32,7 @@ class Anime:
         id = data.get("id")
         title = data.get("title")
         n_ep = data.get("n_ep")
+        image_url = data.get("image_url")
 
         if not id or not title or not n_ep:
             raise ValueError("Data is missing")
@@ -42,7 +44,7 @@ class Anime:
 
         episodes = data.get("episodes")
         if not isinstance(episodes, list):
-            return cls(id=id, title=title, n_ep=n_ep_int)
+            return cls(id=id, title=title, n_ep=n_ep_int, image_url=image_url)
 
         ep_objs = []
         for ep in episodes:
@@ -53,7 +55,7 @@ class Anime:
             else:
                 raise ValueError(f"Invalid episode entry: {ep}")
 
-        return cls(id=id, title=title, n_ep=n_ep_int, episodes=data.get("episodes"))
+        return cls(id=id, title=title, n_ep=n_ep_int, image_url=image_url, episodes=data.get("episodes"))
 
     @classmethod
     def from_unity_dict(cls, data: Dict[str, Any]) -> "Anime":

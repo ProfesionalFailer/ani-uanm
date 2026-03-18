@@ -1,5 +1,7 @@
 # ani-uanm
 
+[![pypresence](https://img.shields.io/badge/using-pypresence-00bb88.svg?style=for-the-badge&logo=discord&logoWidth=20)](https://github.com/qwertyquerty/pypresence)
+
 **ani-uanm** is a Python application designed to stream and download anime with Italian subtitles or dubbing from various sources.
 
 It is inspired by the popular `ani-cli` and uses `mpv` as the media player for streaming.
@@ -88,6 +90,14 @@ REDIRECT_PORT=a_free_port_to_host_the_redirector_server
 
 ---
 
+### About discord integration
+
+Discord rich presence is enabled by default, to disable it just add:
+
+```env
+DISCORD_RPC=false
+```
+
 ## 🛠 Project Status
 
 Currently:
@@ -97,10 +107,11 @@ Currently:
 - ✅ Streaming support
 - ✅ Cli app
 - ✅ Global install through uv
+- ✅ Discord rich presence integration
 - ❌ No bundled app
 - ❌ No way to change video quality
 - ❌ No download support yet
-- ❌ No UI yet
+- ❌ No GUI yet
 - ❌ No additional providers yet
 
 
@@ -110,7 +121,6 @@ Currently:
 
 - Improve the command line application
 - Allow downloading
-- Make a Discord Rich Presence integration
 - AniList integration
 - MyAnimeList integration
 - Add AnimeSaturn support
@@ -121,3 +131,4 @@ Currently:
 ## 📜 License
 
 This project is licensed under the **MIT License**.
+

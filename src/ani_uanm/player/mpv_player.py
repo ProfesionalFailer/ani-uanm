@@ -3,6 +3,8 @@ import os
 import sys
 from os import path
 import time
+from pypresence import Presence, ActivityType
+
 
 from .redirector import RedirectServer
 
@@ -17,9 +19,10 @@ if sys.platform.startswith("win"):
 from mpv import MPV
 
 from ..model import Anime
-from ..utils import REDIRECT_PORT
+from ..utils import REDIRECT_PORT, DISCORD_RPC, singleton
+from ..utils.consts import CLIENT_ID
 
-
+@singleton
 class MpvPlayer:
     def __init__(self):
         self.player = MPV(
@@ -35,6 +38,7 @@ class MpvPlayer:
 
         RedirectServer.start()
 
+        self.discord = Presence(CLIENT_ID) if REDIRECT_PORT else None
 
         @self.player.event_callback("shutdown")
         def on_shutdown(event):
@@ -44,11 +48,18 @@ class MpvPlayer:
         def on_start_file(event):
             pos = self.player.playlist_pos
 
-            if not self.anime_name or not isinstance(pos, int):
+            if not isinstance(self.anime, Anime) or not isinstance(pos, int):
                 return
 
             current_track = pos + self.start
-            self.player['force-media-title'] = f"{self.anime_name} - Episodio {current_track}"
+            self.player['force-media-title'] = f"{self.anime.title} - Episodio {current_track}"
+            if self.discord is not None:
+                self.discord.update(
+                    activity_type=ActivityType.WATCHING,
+                    details=self.anime.title,
+                    large_image=self.anime.image_url, 
+                    state=f"({current_track} / {len(self.player.playlist)})"
+                )
 
 
     def load_playlist(self, anime: Anime, episode: int) -> None:
@@ -71,7 +82,10 @@ class MpvPlayer:
             )
 
         self.start = start
-        self.anime_name = anime.title
+        self.anime = anime
+
+        if self.discord is not None:
+            self.discord.connect()
 
         time.sleep(0.05) # Sleep to allow playlist to load before playing
         self.player.playlist_play_index(episode - start)
