@@ -2,14 +2,15 @@ import json
 import os
 import sys
 import time
-from pypresence import Presence, ActivityType
+from os import path
 
+from pypresence import ActivityType, Presence
 
 from .redirector import RedirectServer
 
 if sys.platform.startswith("win"):
     os.environ["PATH"] = (
-        os.path.abspath(path.join(path.dirname(path.abspath(__file__)), "..", "..", ".."))
+        path.abspath(path.join(path.dirname(path.abspath(__file__)), "..", "..", ".."))
         + os.pathsep
         + os.environ.get("PATH", "")
     )
@@ -18,8 +19,9 @@ if sys.platform.startswith("win"):
 from mpv import MPV
 
 from ..model import Anime
-from ..utils import REDIRECT_PORT, DISCORD_RPC, singleton
+from ..utils import DISCORD_RPC, REDIRECT_PORT, singleton
 from ..utils.consts import CLIENT_ID
+
 
 @singleton
 class MpvPlayer:
@@ -37,7 +39,7 @@ class MpvPlayer:
 
         RedirectServer.start()
 
-        self.discord = Presence(CLIENT_ID) if REDIRECT_PORT else None
+        self.discord = Presence(CLIENT_ID) if DISCORD_RPC else None
 
         @self.player.event_callback("shutdown")
         def on_shutdown(event):
