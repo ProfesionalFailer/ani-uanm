@@ -1,16 +1,19 @@
 import json
 import os
 import sys
-from os import path
 import time
+<<<<<<< HEAD
 from pypresence import Presence, ActivityType
 
+=======
+from os import path
+>>>>>>> main
 
 from .redirector import RedirectServer
 
 if sys.platform.startswith("win"):
     os.environ["PATH"] = (
-        os.path.abspath(path.join(path.dirname(path.abspath(__file__)), "..", ".."))
+        os.path.abspath(path.join(path.dirname(path.abspath(__file__)), "..", "..", ".."))
         + os.pathsep
         + os.environ.get("PATH", "")
     )
