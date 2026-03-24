@@ -147,7 +147,9 @@ class AnimeUnity:
         if not url_match:
             raise ValueError("Url non trovato")
 
-        return f"{url_match.group(1)}?" + urlencode(
+        base_url = url_match.group(1)
+
+        return f"{base_url}" + ("&" if "?" in base_url else "?" ) + urlencode(
             {
                 "token": params.get("token"),
                 "expires": params.get("expires"),
